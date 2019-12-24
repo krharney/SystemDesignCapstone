@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const db = mongoose.connection;
+const model = require("./model.js");
 
 module.exports = {
   getQuestion: productId => {
@@ -64,5 +65,29 @@ module.exports = {
       })
       .catch(err => console.log(err));
   },
-  postQuestion: () => {}
+  postQuestion: req => {
+    return db
+      .collection("questions")
+      .count()
+      .then(count => {
+        model.Question.create(
+          {
+            question_id: count + 1,
+            product_id: Number(req.params.product_id),
+            question_body: req.body.body,
+            question_date: new Date(),
+            asker_name: req.body.name,
+            asker_email: req.body.email,
+            reported: 0,
+            question_helpfulness: 0
+          }
+          // function(err, data) {
+          //   if (err) {
+          //     console.log(err);
+          //     res.sendStatus(500);
+          //   } else res.sendStatus(201);
+          // }
+        );
+      });
+  }
 };

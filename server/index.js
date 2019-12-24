@@ -1,9 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-//TODO: move dbURL to config file later
-const dbURL = "mongodb://localhost:27017/questions2";
+const dbURL = require("../config.js").dbURL;
 
-//connect to db
+//connect to db then server
 const connectToMongo = () => {
   let tries = 0;
   mongoose
@@ -25,6 +24,9 @@ const connectToMongo = () => {
 };
 connectToMongo();
 
+mongoose.set("useCreateIndex", true);
+mongoose.set("useUnifiedTopology", true);
+
 // middleware
 const cors = require("cors");
 const morgan = require("morgan");
@@ -39,5 +41,3 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use("/", router);
-
-// app.listen(port, () => console.log(`Example app listening on port ${port}!`));
